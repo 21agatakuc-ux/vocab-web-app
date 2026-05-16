@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>STANAG Vocab</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <h1>STANAG Vocab</h1>
+
+    <div class="card">
+      <p id="mode">Angielski → Polski</p>
+      <h2 id="word">deter</h2>
+      <p id="answer" class="hidden">odstraszać</p>
+      <p id="mnemonic" class="hidden">Deter brzmi jak detektor — detektor odstrasza intruza.</p>
+    </div>
+
+    <button onclick="showAnswer()">Pokaż odpowiedź</button>
+    <button onclick="knowWord()">Umiem</button>
+    <button onclick="dontKnowWord()">Nie umiem</button>
+    <button onclick="nextWord()">Następne</button>
+    <button onclick="switchMode()">Zmień kierunek</button>
+
+    <p id="stats">Umiem: 0 | Nie umiem: 0</p>
+  </div>
+
+
+<script src="app.js"></script>
+</body>
+</html>
