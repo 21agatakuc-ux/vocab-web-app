@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quiz STANAG</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+    <h1>🧠 Quiz STANAG</h1>
+
+    <div class="card">
+      <h2 id="quizQuestion">Ładowanie pytania...</h2>
+      <div id="quizAnswers"></div>
+      <p id="quizResult"></p>
+      <p id="quizScore">Punkty: 0</p>
+    </div>
+
+    <button onclick="window.location.href='index.html'">← Powrót</button>
+  </div>
+
+  <script src="app.js"></script>
+
+<script>
+let quizPoints = 0;
+let quizCorrectAnswer = "";
+
+function generateQuizQuestion() {
+
+const currentWord =
+  window.words[
+    Math.floor(Math.random() * window.words.length)
+  ];
+
+  quizCorrectAnswer = currentWord.pl;
+
+  document.getElementById("quizQuestion").textContent =
+    `Co znaczy: ${currentWord.en}?`;
+
+  const wrongAnswers = window.words
+    .filter(word => word.pl !== currentWord.pl)
+    .sort(() => Math.random() - 0.5)
+    .slice(0, 3)
+    .map(word => word.pl);
+
+  const answers = [quizCorrectAnswer, ...wrongAnswers]
+    .sort(() => Math.random() - 0.5);
+
+  const box = document.getElementById("quizAnswers");
+  box.innerHTML = "";
+
+  answers.forEach(answer => {
+    const btn = document.createElement("button");
+    btn.textContent = answer;
+    btn.onclick = () => checkAnswer(answer);
+    box.appendChild(btn);
+  });
+}
+
+function checkAnswer(answer) {
+  const result = document.getElementById("quizResult");
+
+  if (answer === quizCorrectAnswer) {
+    result.textContent = "✅ Dobrze!";
+    result.style.color = "green";
+    quizPoints++;
+  } else {
+    result.textContent = `❌ Źle! Poprawna odpowiedź: ${quizCorrectAnswer}`;
+    result.style.color = "red";
+  }
+
+  document.getElementById("quizScore").textContent = `Punkty: ${quizPoints}`;
+
+  setTimeout(() => {
+    result.textContent = "";
+    generateQuizQuestion();
+  }, 1500);
+}
+
+generateQuizQuestion();
+</script>
+</body>
+</html>

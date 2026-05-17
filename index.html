@@ -17,15 +17,20 @@
       <p id="mnemonic" class="hidden">Deter brzmi jak detektor — detektor odstrasza intruza.</p>
     </div>
 
-    <button onclick="showAnswer()">Pokaż odpowiedź</button>
-    <button onclick="knowWord()">Umiem</button>
-    <button onclick="dontKnowWord()">Nie umiem</button>
-    <button onclick="nextWord()">Następne</button>
-    <button onclick="switchMode()">Zmień kierunek</button>
-
+<button onclick="showAnswer()">Pokaż odpowiedź</button>
+<button onclick="speakWord()">🔊 Wymowa</button>
+<button onclick="knowWord()">Umiem</button>
+<button onclick="dontKnowWord()">Nie umiem</button>
+<button onclick="nextWord()">Następne</button>
+<button onclick="switchMode()">Zmień kierunek</button>
+<button onclick="toggleDifficultMode()">
+🔥 Trudne słówka
+</button>
+<button onclick="resetProgress()">Resetuj postęp</button>
     <p id="stats">Umiem: 0 | Nie umiem: 0</p>
-  </div>
-
+    <button onclick="window.location.href='quiz.html'">
+🧠 Quiz
+</button>
 
 <script src="app.js"></script>
 </body>

@@ -1,4 +1,4 @@
-const words = [
+var words = [
   { en: "reveal", pl: "ujawniać", mnemonic: "Reveal = ujawnić sekret." },
   { en: "overwhelming", pl: "przytłaczający", mnemonic: "Overwhelming = za dużo naraz." },
   { en: "tackle a problem", pl: "zmierzyć się z problemem", mnemonic: "Tackle = atakować problem." },
@@ -541,10 +541,23 @@ const words = [
 { en: "ignore", pl: "ignorować", mnemonic: "Ignore warnings." }
 ];
 
-let currentIndex = 0;
-let reversed = false;
-let known = 0;
-let unknown = 0;
+window.words = words;
+
+let currentIndex = Number(localStorage.getItem("currentIndex")) || 0;
+let reversed = localStorage.getItem("reversed") === "true";
+let known = Number(localStorage.getItem("known")) || 0;
+let unknown = Number(localStorage.getItem("unknown")) || 0;
+let difficultWords =
+  JSON.parse(localStorage.getItem("difficultWords")) || [];
+
+let difficultMode = false;
+
+function saveProgress() {
+  localStorage.setItem("currentIndex", currentIndex);
+  localStorage.setItem("reversed", reversed);
+  localStorage.setItem("known", known);
+  localStorage.setItem("unknown", unknown);
+}
 
 function renderWord() {
   const currentWord = words[currentIndex];
@@ -564,6 +577,7 @@ function renderWord() {
   document.getElementById("mnemonic").classList.add("hidden");
 
   updateStats();
+saveProgress();
 }
 
 function showAnswer() {
@@ -571,8 +585,35 @@ function showAnswer() {
   document.getElementById("mnemonic").classList.remove("hidden");
 }
 
+function speakWord() {
+  const currentWord = words[currentIndex];
+
+  const speech = new SpeechSynthesisUtterance(currentWord.en);
+
+  speech.lang = "en-US";
+  speech.rate = 0.9;
+
+  window.speechSynthesis.speak(speech);
+}
+
 function nextWord() {
-  currentIndex = Math.floor(Math.random() * words.length);
+  let availableWords = words;
+
+  if (difficultMode && difficultWords.length > 0) {
+    availableWords = words.filter(word =>
+      difficultWords.includes(word.en)
+    );
+  }
+
+  let randomIndex =
+    Math.floor(Math.random() * availableWords.length);
+
+  const selectedWord = availableWords[randomIndex];
+
+  currentIndex = words.findIndex(
+    word => word.en === selectedWord.en
+  );
+
   renderWord();
 }
 
@@ -583,7 +624,19 @@ function knowWord() {
 }
 
 function dontKnowWord() {
-  unknown = unknown + 1;
+  unknown++;
+
+  const currentWord = words[currentIndex];
+
+  if (!difficultWords.includes(currentWord.en)) {
+    difficultWords.push(currentWord.en);
+  }
+
+  localStorage.setItem(
+    "difficultWords",
+    JSON.stringify(difficultWords)
+  );
+
   nextWord();
 }
 
@@ -599,4 +652,36 @@ function updateStats() {
     `Wszystkie: ${words.length} | Do nauki: ${left} | Umiem: ${known} | Nie umiem: ${unknown}`;
 }
 
-renderWord();
+function resetProgress() {
+  known = 0;
+  unknown = 0;
+  currentIndex = 0;
+  localStorage.clear();
+  renderWord();
+}
+
+  saveProgress();
+  updateStats();
+
+  setTimeout(() => {
+    nextWord();
+    startQuiz();
+  }, 2000);
+
+function toggleDifficultMode() {
+  difficultMode = !difficultMode;
+
+  if (difficultMode) {
+    alert("Tryb trudnych słówek WŁĄCZONY");
+  } else {
+    alert("Tryb trudnych słówek WYŁĄCZONY");
+  }
+
+  nextWord();
+}
+
+window.words = words;
+
+if (document.getElementById("word")) {
+  renderWord();
+}
